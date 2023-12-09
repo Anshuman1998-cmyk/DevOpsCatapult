@@ -1,0 +1,21 @@
+# Ansible playbook to pull docker image from docker hub and run the container.
+
+---
+- import_playbook: docker_build_push.yaml
+
+- name: Playbook to build Docker image and run the container
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Run Docker container using my-docker-image build via war file.
+      docker_container:
+        name: my-docker-image
+        image: my-docker-image
+        state: started
+        recreate: yes
+        detach: true
+        pull: yes
+        ports:
+          - "8888:8080"
