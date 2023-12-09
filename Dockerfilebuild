@@ -1,0 +1,7 @@
+# Build Docker image from .war file using Ansible playbook via Jenkins
+# Pull tomcat image
+# copy .war file to our tomcat directory
+
+FROM tomcat:9.0.62-jdk11-openjdk
+MAINTAINER Anshuman
+COPY ./Demo2.war /usr/local/tomcat/Demo2
