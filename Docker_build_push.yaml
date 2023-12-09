@@ -2,7 +2,7 @@
 
 ---
 - name: Playbook to build Docker image and run the container
-  hosts: cicd-VirtualBox
+  hosts: all
   become: true
   gather_facts: false
 
