@@ -1,0 +1,40 @@
+# Ansible playbook to run docker image, run the container and register the image to docker hub.
+
+---
+- name: Playbook to build Docker image and run the container
+  hosts: cicd-VirtualBox
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Delete existing docker image from the control node.
+      command: docker rmi my-docker-image -f
+      ignore_errors: yes
+
+    - name: Build new Docker image using our Demo2 tomcat war file
+      command: docker build -t my-docker-image .
+      args:
+        chdir: /opt/docker
+
+    - name: Start docker container for the image we created above
+      docker_container:
+        name: my-docker-image
+        image: my-docker-image
+        state: started
+        recreate: yes
+        detach: true
+        ports:
+          - "8888:8080"
+          
+    - name: Push Docker image to docker hub registry
+      docker_image:
+        name: my-docker-image
+        build:
+          path: /opt/docker
+          pull: true
+        state: present
+        tag: "latest"
+        force_tag: yes
+        repository: my-docker-image:latest
+        push: yes
+        source: build
